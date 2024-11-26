@@ -64,18 +64,21 @@ check_ownership() {
 
 # Command implementations
 list_tasks() {
+    echo "UN-CHECKED TASKS:"
     sqlite3 "$DB_PATH" "SELECT id, status, desc FROM tasks WHERE owner_id=$CURRENT_USER AND status=0;" | while IFS='|' read -r id status desc; do
         format_task "$id" "$status" "$desc"
     done
 }
 
 list_checked() {
+    echo "CHECKED TASKS:"
     sqlite3 "$DB_PATH" "SELECT id, status, desc FROM tasks WHERE owner_id=$CURRENT_USER AND status=1;" | while IFS='|' read -r id status desc; do
         format_task "$id" "$status" "$desc"
     done
 }
 
 list_all() {
+    echo "ALL TASKS:"
     sqlite3 "$DB_PATH" "SELECT id, status, desc FROM tasks WHERE owner_id=$CURRENT_USER;" | while IFS='|' read -r id status desc; do
         format_task "$id" "$status" "$desc"
     done
@@ -107,6 +110,7 @@ delete_task() {
 }
 
 list_next() {
+    echo "NEXT TASKS:"
     sqlite3 "$DB_PATH" "SELECT id, status, desc FROM tasks WHERE owner_id=$CURRENT_USER AND status=0 AND priority=(SELECT MIN(priority) FROM tasks WHERE owner_id=$CURRENT_USER AND status=0);" | while IFS='|' read -r id status desc; do
         format_task "$id" "$status" "$desc"
     done
@@ -125,6 +129,7 @@ unstage_task() {
 }
 
 list_staged() {
+    echo "STAGED TASKS:"
     sqlite3 "$DB_PATH" "SELECT id, status, desc FROM tasks WHERE owner_id=$CURRENT_USER AND staged=1;" | while IFS='|' read -r id status desc; do
         format_task "$id" "$status" "$desc"
     done
@@ -132,6 +137,7 @@ list_staged() {
 
 find_tasks() {
     local pattern="$1"
+    echo "MATCHED TASKS:"
     sqlite3 "$DB_PATH" "SELECT id, status, desc FROM tasks WHERE owner_id=$CURRENT_USER AND desc LIKE '%$pattern%';" | while IFS='|' read -r id status desc; do
         format_task "$id" "$status" "$desc"
     done
