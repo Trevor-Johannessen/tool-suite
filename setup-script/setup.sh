@@ -4,5 +4,6 @@ CWD=$(pwd)
 
 
 
-# Set up metrics
+# Launch Modular Scripts
 sudo $CWD/metrics.sh
+sudo $CWD/packages.sh
