@@ -1,0 +1,28 @@
+[Unit]
+Description=Node Exporter
+Requires=node_exporter.socket
+
+[Service]
+User=node_exporter
+# Fallback when environment file does not exist
+Environment=OPTIONS=
+EnvironmentFile=-/etc/sysconfig/node_exporter
+ExecStart=/usr/sbin/node_exporter \
+  --collector.cpu \
+  --collector.diskstats \
+  --collector.filesystem \
+  --collector.meminfo \
+  --collector.netdev \
+  --collector.processes \
+  --collector.cpufreq \
+  --collector.uname \
+  --collector.loadavg \
+  --collector.netstat \
+  --collector.time \
+  --collector.thermal_zone \
+  --collector.tcpstat \
+  --collector.xfs
+    
+
+[Install]
+WantedBy=multi-user.target
