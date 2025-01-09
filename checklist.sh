@@ -10,14 +10,14 @@
 # v0.0.1 Created the first draft of the checklist. 
 
 
-DB_PATH="/etc/checklist/test.db"
-DB_DIR="/etc/checklist"
+DB_PATH="/home/tjohannessen/tools/checklist/checklist.db"
+DB_DIR="/home/tjohannessen/tools/checklist"
 
 # Create database directory if it doesn't exist
 if [ ! -d "$DB_DIR" ]; then
     echo "Sudo is needed to create the /etc/checklist directory."
-    sudo mkdir -p "$DB_DIR"
-    sudo chmod 777 "$DB_DIR"
+    mkdir -p "$DB_DIR"
+    chmod 777 "$DB_DIR"
 fi
 
 # Create database and table if they don't exist
@@ -101,6 +101,8 @@ new_task() {
     local desc="$1"
     local timestamp=$(date +%s)
     sqlite3 "$DB_PATH" "INSERT INTO tasks (desc, created, owner_id) VALUES ('$desc', $timestamp, $CURRENT_USER);"
+    local id=$(sqlite3 "$DB_PATH" "SELECT MAX(id) FROM tasks")
+    echo "Created task $id"
 }
 
 delete_task() {
@@ -151,7 +153,7 @@ print_help() {
     -n --new -> Creates a new task. This takes in an argument which is the description of the task to be created. The task is then inserted into the database. The created attribute should be the current unix timestamp.
     -d --delete -> Deleted a given task. This takes in an argument which is the task ID of the task to be deleted.
     -s --stage -> Sets a given task as staged. This sets its staged attribute to 0. This takes in an argument which is the task ID of the task to be staged.
-    -u --unstage -> Sets a given task as unstaged. This sets its staged sttribute to 0. This takes in an argument which is the task ID of the task to be unstaged.
+    -t --unstage -> Sets a given task as unstaged. This sets its staged sttribute to 0. This takes in an argument which is the task ID of the task to be unstaged.
     -f --find -> lists all tasks that belong to the current user and contain the given string. This attribute takes in a string to find.
     -L --list -> lists all uncompleted tasks for the current user.
     -C --list-checked -> list all tasks that are marked as completed for the current user.
@@ -167,7 +169,7 @@ init_db
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
-        -L|--list) list_tasks; exit 0 ;;
+        -U|--list-unchecked) list_tasks; exit 0 ;;
         -C|--list-checked) list_checked; exit 0 ;;
         -A|--list-all) list_all; exit 0 ;;
         -c|--check) check_task "$2"; exit 0 ;;
@@ -176,7 +178,7 @@ while [[ $# -gt 0 ]]; do
         -d|--delete) delete_task "$2"; exit 0 ;;
         -N|--list-next) list_next; exit 0 ;;
         -s|--stage) stage_task "$2"; exit 0 ;;
-        --unstage) unstage_task "$2"; exit 0 ;;
+        -t|--unstage) unstage_task "$2"; exit 0 ;;
         -S|--list-staged) list_staged; exit 0 ;;
         -f|--find) find_tasks "$2"; exit 0 ;;
         -h|--help) print_help; exit 0 ;;
