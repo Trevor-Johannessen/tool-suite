@@ -6,6 +6,7 @@
 #	-m : The string to match file names to
 #	-n : The number of files to preserve
 # Example:
+#   ./smart-backup.sh -d "./test" -m "file*" -n 5 "touch ./test/file1"
 #	smart-backup -d /foo/bar -m "backup-*-version.tar.gz" -n 10 "backup-files -xyz '/foo/bar'"
 #	
 #	This runs the backup-files command with its given parameters. Then it searches the /foo/bar directory for files that match the backup-*-version.tar.gz naming scheme. It deletes the oldest files matching that scheme until 10 files remain.
