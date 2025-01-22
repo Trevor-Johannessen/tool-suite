@@ -17,6 +17,8 @@
 #	# The error code of the given backup command
 #
 
+# Default max backups is number limit
+num_files=9223372036854775806
 while getopts "d:m:n:" opt; do
     case $opt in
         d) directory="$OPTARG" ;;
