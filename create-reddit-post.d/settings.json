@@ -1,0 +1,7 @@
+{
+    "client_id": "Your reddit client_id",
+    "client_secret": "Your reddit secret",
+    "user_agent": "<console:AlphaAd:1.0>",
+    "username": "Your reddit username",
+    "password": "Your reddit password"
+}
