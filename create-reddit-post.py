@@ -16,32 +16,22 @@ def processArgs():
             f = open(arg)
             submission = json.load(f)
             postFile = arg
-        elif opt in ['-s', '--settings']:
-            f = open(arg)
-            settings = json.load(f)
-            setFile = arg
     if 'flair' not in submission:
         submission['flair'] = ''
-    checkArgs(submission, settings, postFile, setFile)
-    return settings, submission
+    checkArgs(submission, postFile, setFile)
+    return submission
 
-def checkArgs(submission, settings, postFile, setFile):
+def checkArgs(submission, postFile, setFile):
     if submission is None:
         raise Exception("Please include a post file with -p or --post")
-    elif settings is None:
-        raise Exception("Please include a settings file with -s or --settings")
 
-    settingsArr = ["client_id", "client_secret", "user_agent", "username", "password"]
-    for key in settingsArr:
-        if key not in settings:
-            raise Exception(f"Error in {setFile}: {key} is missing.")
     submissionArr = ["subreddit", "title", "body"]
     for key in submissionArr:
         if key not in submission:
             raise Exception(f"Error in {postFile}: {key} is missing.")
         
 def main():
-    settings, submission = processArgs()
+    submission = processArgs()
     reddit = praw.Reddit(
         client_id=os.environ["REDDIT_CLIENT_ID"],
         client_secret=os.environ["REDDIT_CLIENT_SECRET"],
