@@ -19,9 +19,10 @@
 
 # Default max backups is number limit
 num_files=9223372036854775806
-while getopts "d:m:n:" opt; do
+while getopts "b:d:m:n:" opt; do
     case $opt in
         d) directory="$OPTARG" ;;
+	b) backup_directory="$OPTARG" ;;
         m) match_string="$OPTARG" ;;
         n) num_files="$OPTARG" ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
@@ -47,7 +48,7 @@ fi
 $backup_command
 
 # Delete excess backups
-backups=$(find "$directory" -maxdepth 1 -name "$match_string" -type f | wc -l)
+backups=$(find "$backup_directory/" -maxdepth 1 -name "$match_string" -type f | wc -l)
 echo "There are currently $backups backups"
 if [ "$backups" -gt "$num_files" ]; then
     files_to_delete=$((backups - num_files))
@@ -55,7 +56,7 @@ if [ "$backups" -gt "$num_files" ]; then
     if [ "$files_to_delete" -lt 0 ]; then
         files_to_delete=0
     fi
-    find "$directory" -maxdepth 1 -name "$match_string" -type f -printf "%T@ %p\n"  | sort -k1,1nr | cut -d' ' -f2- | tail -n "$files_to_delete" | while read -r file; do
+    find "$backup_directory/" -maxdepth 1 -name "$match_string" -type f -printf "%T@ %p\n"  | sort -k1,1nr | cut -d' ' -f2- | tail -n "$files_to_delete" | while read -r file; do
         rm $file
     done
 fi
